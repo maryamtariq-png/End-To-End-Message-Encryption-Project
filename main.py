@@ -29,6 +29,30 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     
     return {"access_token": token, "token_type": "bearer"}
 
+#read messages
+@app.get("/messages")
+def get_my_messages(db: Session = Depends(get_db), current_user_id: int = Depends(auth.get_current_user)):
+    messages = db.query(models.Message).filter(models.Message.receiver_id == current_user_id).all()
+   
+    decrypted_messages = []
+    for msg in messages:
+        try:
+            decrypted_content = encryption.decrypt_message(msg.encrypted_content)
+            decrypted_messages.append({
+                "id": msg.id,
+                "sender_id": msg.sender_id,
+                "content": decrypted_content,
+                "timestamp": msg.timestamp
+            })
+        except Exception:
+            decrypted_messages.append({
+                "id": msg.id,
+                "sender_id": msg.sender_id,
+                "content": "[Error: Could not decrypt message]",
+                "timestamp": msg.timestamp
+            })
+    return decrypted_messages
+
 @app.post("/send")
 def send_message(
     msg: schemas.MessageCreate, 
