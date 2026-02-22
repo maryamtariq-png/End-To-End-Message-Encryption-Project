@@ -29,7 +29,6 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     
     return {"access_token": token, "token_type": "bearer"}
 
-#read messages
 @app.get("/messages")
 def get_my_messages(db: Session = Depends(get_db), current_user_id: int = Depends(auth.get_current_user)):
     messages = db.query(models.Message).filter(models.Message.receiver_id == current_user_id).all()
@@ -71,7 +70,6 @@ def send_message(
     db.commit()
     return {"message": "Sent securely"}
 
-#websocket
 @app.websocket("/ws/{user_id}")
 async def websocket_endpoint(websocket: WebSocket, user_id: int):
     await manager.connect(user_id, websocket)
