@@ -30,7 +30,7 @@ Only authorized users can access chat functionality
 
 # How to run:
 
-Clone the repo: git clone https://github.com/hasan-65-db/SpendWisely-API.git
+Clone the repo: git clone https://github.com/maryamtariq-png/End-To-End-Message-Encryption-Project.git
 
 Install dependencies: pip install -r requirements.txt 
 
